@@ -1,11 +1,26 @@
+
 {
+  "id": "./",
   "name": "My Info Home YouTube Tracker",
-  "short_name": "MIH Tracker",
-  "description": "Plan YouTube Shorts, track performance, and record learnings.",
-  "start_url": "./index.html",
+  "short_name": "My Info Tracker",
+  "description": "Plan YouTube Shorts, track performance, and record lessons learned.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#111827",
-  "orientation": "portrait",
-  "icons": []
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
