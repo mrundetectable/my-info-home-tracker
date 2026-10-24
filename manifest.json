@@ -1,0 +1,11 @@
+{
+  "name": "My Info Home YouTube Tracker",
+  "short_name": "MIH Tracker",
+  "description": "Plan YouTube Shorts, track performance, and record learnings.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#111827",
+  "orientation": "portrait",
+  "icons": []
+}

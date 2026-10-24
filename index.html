@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>My Info Home — YouTube Tracker</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--accent:#d92d20;--nav:#111827;--green:#16835d;--amber:#a16207}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--nav);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}header .wrap{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:18px;margin:0}header p{margin:3px 0 0;color:#cbd5e1;font-size:12px}
+main{max-width:1100px;margin:auto;padding:16px}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:16px}.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 13px;white-space:nowrap;color:var(--ink);font-weight:650}.tab.active{background:var(--nav);color:#fff}
+.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px;min-width:0}.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:25px;font-weight:750;margin-top:4px}.metric .sub{font-size:11px;color:var(--muted);margin-top:3px}
+h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:0 0 10px}.muted{color:var(--muted);font-size:13px}.small{font-size:12px;color:var(--muted)}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 12px;color:var(--ink);font-weight:650}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.dark{background:var(--nav);color:#fff;border-color:var(--nav)}.danger{color:#b91c1c}.actions{display:flex;gap:8px;flex-wrap:wrap}
+label{display:block;font-size:12px;font-weight:700;color:#475569;margin:10px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;font:inherit;color:var(--ink)}textarea{min-height:76px;resize:vertical}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.full{grid-column:1/-1}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.pill{display:inline-block;border-radius:999px;background:#f1f5f9;padding:4px 8px;font-size:11px;font-weight:700}.pill.good{background:#dcfce7;color:#166534}.pill.warn{background:#fef3c7;color:#92400e}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px 8px;vertical-align:top}th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}td strong{display:block}.tablewrap{overflow-x:auto}.video-title{min-width:170px;max-width:300px}.empty{text-align:center;padding:25px;color:var(--muted)}.notice{padding:11px 12px;border-radius:10px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;font-size:12px;line-height:1.5}.success{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}.bar{height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden}.bar span{display:block;height:100%;background:#16835d}.checkrow{display:flex;align-items:center;gap:8px;margin:10px 0}.checkrow input{width:auto}.hidden{display:none!important}
+@media(max-width:760px){main{padding:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.metric .value{font-size:22px}header .wrap{align-items:flex-start}.tablewrap table{min-width:760px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div><h1>▶ My Info Home Tracker</h1><p>YouTube Shorts planner · performance · learnings</p></div><button id="installBtn" class="hidden">Install app</button></div></header>
+<main>
+<div class="tabs">
+<button class="tab active" data-page="dashboard">Dashboard</button>
+<button class="tab" data-page="videos">Videos</button>
+<button class="tab" data-page="calendar">Schedule</button>
+<button class="tab" data-page="learnings">Learnings</button>
+<button class="tab" data-page="settings">YouTube sync & data</button>
+</div>
+<section id="dashboard" class="page active">
+<div class="grid">
+<div class="card metric"><div class="label">Videos tracked</div><div class="value" id="mVideos">0</div><div class="sub">All statuses</div></div>
+<div class="card metric"><div class="label">Published videos</div><div class="value" id="mPublished">0</div><div class="sub">Uploaded Shorts</div></div>
+<div class="card metric"><div class="label">Total views recorded</div><div class="value" id="mViews">0</div><div class="sub">Latest values entered/imported</div></div>
+<div class="card metric"><div class="label">Monthly view goal</div><div class="value">5M</div><div class="sub">Your channel target</div></div>
+</div>
+<div class="two">
+<div class="card"><div class="row"><h2>Next videos</h2><button onclick="go('calendar')">View schedule</button></div><div id="upcoming"></div></div>
+<div class="card"><h2>Recent lessons</h2><div id="recentLessons"></div></div>
+</div>
+<div class="card"><h2>Channel workflow</h2><div class="muted">Plan → Script → Edit → Upload → Record results → Write one lesson → Apply it to the next Short.</div></div>
+</section>
+<section id="videos" class="page">
+<div class="row"><div><h2>Video tracker</h2><div class="muted">Keep planned videos and published results together.</div></div><button class="primary" onclick="newVideo()">+ Add video</button></div>
+<div class="card">
+<div class="formgrid">
+<div><label>Search</label><input id="searchVideos" placeholder="Search topic or title" oninput="renderVideos()"></div>
+<div><label>Status</label><select id="filterStatus" onchange="renderVideos()"><option value="">All statuses</option><option>Idea</option><option>Script ready</option><option>Editing</option><option>Scheduled</option><option>Published</option></select></div>
+</div>
+<div class="tablewrap"><table><thead><tr><th>Video</th><th>Publish plan</th><th>Status</th><th>Views</th><th>Stayed to watch</th><th>AVD</th><th></th></tr></thead><tbody id="videoRows"></tbody></table></div>
+<div id="emptyVideos" class="empty">No videos yet. Add your next Short to begin.</div>
+</div>
+</section>
+<section id="calendar" class="page">
+<div class="row"><div><h2>Upload schedule</h2><div class="muted">Default slots: 9:00 AM and 6:00 PM India time.</div></div><button class="primary" onclick="newVideo()">+ Schedule video</button></div>
+<div class="card"><div class="formgrid"><div><label>Filter month</label><input type="month" id="monthFilter" onchange="renderCalendar()"></div><div><label>Quick note</label><div class="muted" style="padding-top:10px">Use this view to check planned and published videos by date.</div></div></div><div id="calendarItems"></div></div>
+</section>
+<section id="learnings" class="page">
+<div class="row"><div><h2>Lessons learned</h2><div class="muted">Turn each upload into one clear next action.</div></div><button class="primary" onclick="newVideo()">Add lesson to a video</button></div>
+<div id="learningItems"></div>
+</section>
+<section id="settings" class="page">
+<div class="card"><h2>Connect YouTube (optional)</h2>
+<div class="notice">Automatic sync needs your own Google Cloud OAuth Client ID. This app does not send your credentials to us; sync runs in your browser. For production use, configure OAuth consent, add your app's origin as an authorized JavaScript origin, and enable YouTube Data API v3 plus YouTube Analytics API. YouTube Analytics does not expose every Studio metric; “Stayed to watch” should be entered manually if it is not returned for your account.</div>
+<label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxx.apps.googleusercontent.com">
+<div class="actions" style="margin-top:10px"><button class="primary" onclick="connectYouTube()">Connect / sync YouTube</button><button onclick="syncYouTube()">Refresh channel videos</button><button onclick="disconnectYouTube()">Disconnect</button></div>
+<div id="syncStatus" class="muted" style="margin-top:10px">Not connected.</div>
+<p class="small">This sync imports your channel's uploaded video list and public view/like/comment counts where the API allows. Analytics metrics may require OAuth and channel eligibility. Existing manual notes are preserved when matching a video by YouTube ID.</p>
+</div>
+<div class="card"><h2>Backup and restore</h2><p class="muted">Your tracker data is saved on this device/browser. Export backups regularly, especially before clearing browser data.</p><div class="actions"><button class="primary" onclick="exportData()">Export backup (JSON)</button><label class="btn" style="margin:0">Import backup <input id="importFile" type="file" accept=".json,application/json" style="display:none" onchange="importData(event)"></label><button onclick="exportCSV()">Export video CSV</button><button class="danger" onclick="clearData()">Clear all local data</button></div></div>
+<div class="card"><h2>How this app works</h2><ul class="muted"><li>Manual planning, stats, notes, and learnings work offline after the app is loaded.</li><li>Automatic YouTube sync requires internet, Google OAuth configuration, and API quota.</li><li>Data is stored locally in this browser. It does not automatically sync across devices.</li><li>For multi-device cloud backup or Play Store distribution, a backend and release signing are separate steps.</li></ul></div>
+</section>
+</main>
+<dialog id="videoDialog" style="border:0;border-radius:16px;padding:0;width:min(720px,calc(100% - 24px));max-height:92vh;overflow:auto">
+<form id="videoForm" class="card" style="margin:0;border:0" onsubmit="saveVideo(event)">
+<div class="row"><h2 id="formTitle">Add video</h2><button type="button" onclick="closeDialog()">✕</button></div>
+<input type="hidden" id="vId">
+<div class="formgrid">
+<div class="full"><label>Topic / working title *</label><input id="vTitle" required placeholder="e.g. Why airplane windows have tiny holes"></div>
+<div><label>Status</label><select id="vStatus"><option>Idea</option><option>Script ready</option><option>Editing</option><option>Scheduled</option><option>Published</option></select></div>
+<div><label>Video length (seconds)</label><input id="vLength" type="number" min="0" placeholder="30"></div>
+<div><label>Planned / publish date</label><input id="vDate" type="date"></div>
+<div><label>Upload time</label><select id="vTime"><option>9:00 AM</option><option>6:00 PM</option><option>Other</option></select></div>
+<div class="full"><label>YouTube video URL or ID</label><input id="vUrl" placeholder="https://youtube.com/shorts/..."></div>
+<div><label>Views</label><input id="vViews" type="number" min="0" placeholder="0"></div>
+<div><label>Stayed to watch (%)</label><input id="vStayed" type="number" min="0" max="100" step="0.01" placeholder="e.g. 58.5"></div>
+<div><label>Average view duration (seconds)</label><input id="vAvd" type="number" min="0" step="0.1" placeholder="0"></div>
+<div><label>Average % viewed</label><input id="vApv" type="number" min="0" step="0.1" placeholder="0"></div>
+<div><label>Views at 24 hours</label><input id="vViews24" type="number" min="0" placeholder="Optional"></div>
+<div><label>Views at 7 days</label><input id="vViews7" type="number" min="0" placeholder="Optional"></div>
+<div class="full"><label>Hook / opening</label><textarea id="vHook" placeholder="What does the viewer hear/see first?"></textarea></div>
+<div class="full"><label>What worked</label><textarea id="vWorked" placeholder="Evidence from this video's performance"></textarea></div>
+<div class="full"><label>What failed / possible issue</label><textarea id="vFailed" placeholder="Avoid guessing; record what the data suggests"></textarea></div>
+<div class="full"><label>Lesson for the next Short</label><textarea id="vLesson" placeholder="One specific change to test next time"></textarea></div>
+<div class="full"><label>Next action</label><input id="vNext" placeholder="e.g. Show the unusual object in the first second"></div>
+</div>
+<div class="actions" style="margin-top:15px"><button type="submit" class="primary">Save video</button><button type="button" onclick="closeDialog()">Cancel</button><button type="button" id="deleteVideoBtn" class="danger hidden" onclick="deleteCurrentVideo()">Delete video</button></div>
+</form>
+</dialog>
+<script>
+const STORE='mih_tracker_v1';
+let videos=loadData(), editingId=null, accessToken=null, tokenClient=null, deferredInstall=null;
+function loadData(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e){return []}}
+function persist(){localStorage.setItem(STORE,JSON.stringify(videos));renderAll()}
+function uid(){return 'v_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
+function num(v){return Number(v)||0}
+function fmt(n){return num(n).toLocaleString('en-IN')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateLabel(d){if(!d)return 'Not set';try{return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}catch(e){return d}}
+function getYtId(raw){if(!raw)return '';let s=raw.trim();if(/^[\w-]{11}$/.test(s))return s;try{let u=new URL(s);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1,12);if(u.searchParams.get('v'))return u.searchParams.get('v');let m=u.pathname.match(/\/(?:shorts|embed|live)\/([\w-]{11})/);if(m)return m[1]}catch(e){}return ''}
+function go(page){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.page===page));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));if(page==='calendar')renderCalendar();if(page==='videos')renderVideos();if(page==='learnings')renderLearnings()}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function newVideo(){editingId=null;document.getElementById('videoForm').reset();document.getElementById('vId').value='';document.getElementById('formTitle').textContent='Add video';document.getElementById('deleteVideoBtn').classList.add('hidden');document.getElementById('vStatus').value='Idea';document.getElementById('videoDialog').showModal()}
+function closeDialog(){document.getElementById('videoDialog').close()}
+function editVideo(id){let v=videos.find(x=>x.id===id);if(!v)return;editingId=id;document.getElementById('formTitle').textContent='Edit video';document.getElementById('deleteVideoBtn').classList.remove('hidden');const map={vTitle:'title',vStatus:'status',vLength:'length',vDate:'date',vTime:'time',vUrl:'url',vViews:'views',vStayed:'stayed',vAvd:'avd',vApv:'apv',vViews24:'views24',vViews7:'views7',vHook:'hook',vWorked:'worked',vFailed:'failed',vLesson:'lesson',vNext:'next'};Object.entries(map).forEach(([el,key])=>document.getElementById(el).value=v[key]??'');document.getElementById('vId').value=id;document.getElementById('videoDialog').showModal()}
+function saveVideo(e){e.preventDefault();let old=videos.find(x=>x.id===editingId)||{};let val=id=>document.getElementById(id).value;let rawUrl=val('vUrl').trim();let ytId=getYtId(rawUrl);let v={...old,id:editingId||uid(),title:val('vTitle').trim(),status:val('vStatus'),length:num(val('vLength')),date:val('vDate'),time:val('vTime'),url:rawUrl,ytId,views:num(val('vViews')),stayed:val('vStayed')===''?'':num(val('vStayed')),avd:num(val('vAvd')),apv:num(val('vApv')),views24:val('vViews24')===''?'':num(val('vViews24')),views7:val('vViews7')===''?'':num(val('vViews7')),hook:val('vHook'),worked:val('vWorked'),failed:val('vFailed'),lesson:val('vLesson'),next:val('vNext'),updatedAt:new Date().toISOString()};if(v.status==='Published'&&!v.date)v.date=new Date().toISOString().slice(0,10);if(ytId){v.url=rawUrl||'https://youtube.com/watch?v='+ytId}let idx=videos.findIndex(x=>x.id===v.id);if(idx>=0)videos[idx]=v;else videos.push(v);closeDialog();persist()}
+function deleteCurrentVideo(){if(!editingId||!confirm('Delete this video and its notes?'))return;videos=videos.filter(v=>v.id!==editingId);closeDialog();persist()}
+function renderAll(){renderDashboard();renderVideos();renderCalendar();renderLearnings()}
+function renderDashboard(){document.getElementById('mVideos').textContent=fmt(videos.length);document.getElementById('mPublished').textContent=fmt(videos.filter(v=>v.status==='Published').length);document.getElementById('mViews').textContent=fmt(videos.reduce((s,v)=>s+num(v.views),0));let upcoming=videos.filter(v=>v.date&&v.status!=='Published').sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);document.getElementById('upcoming').innerHTML=upcoming.length?upcoming.map(v=>`<div style="padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer" onclick="editVideo('${v.id}')"><div class="row"><strong>${esc(v.title)}</strong><span class="pill">${esc(v.status)}</span></div><div class="small">${dateLabel(v.date)} · ${esc(v.time||'Time not set')}</div></div>`).join(''):'<div class="empty">No upcoming videos scheduled.</div>';let lessons=videos.filter(v=>v.lesson||v.next).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||'')).slice(0,3);document.getElementById('recentLessons').innerHTML=lessons.length?lessons.map(v=>`<div style="padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer" onclick="editVideo('${v.id}')"><strong>${esc(v.title)}</strong><div class="muted">${esc(v.lesson||v.next)}</div></div>`).join(''):'<div class="empty">Add a lesson after your next upload.</div>'}
+function renderVideos(){let q=(document.getElementById('searchVideos')?.value||'').toLowerCase(),f=document.getElementById('filterStatus')?.value||'';let list=videos.filter(v=>(!q||v.title.toLowerCase().includes(q))&&(!f||v.status===f)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));document.getElementById('videoRows').innerHTML=list.map(v=>`<tr><td class="video-title"><strong>${esc(v.title)}</strong><span class="small">${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener">Open video ↗</a>`:'No link yet'}</span><span class="small">${v.length?esc(v.length)+' sec':''}</span></td><td>${dateLabel(v.date)}<div class="small">${esc(v.time||'')}</div></td><td><span class="pill ${v.status==='Published'?'good':v.status==='Scheduled'?'warn':''}">${esc(v.status)}</span></td><td>${fmt(v.views)}</td><td>${v.stayed!==''&&v.stayed!=null?esc(v.stayed)+'%':'—'}</td><td>${v.avd?esc(v.avd)+'s':'—'}<div class="small">${v.apv?esc(v.apv)+'% APV':''}</div></td><td><button onclick="editVideo('${v.id}')">Edit</button></td></tr>`).join('');document.getElementById('emptyVideos').classList.toggle('hidden',list.length>0)}
+function renderCalendar(){let month=document.getElementById('monthFilter')?.value||new Date().toISOString().slice(0,7);let list=videos.filter(v=>v.date&&v.date.startsWith(month)).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||''));document.getElementById('calendarItems').innerHTML=list.length?list.map(v=>`<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);gap:12px"><div style="min-width:78px"><strong>${dateLabel(v.date)}</strong><div class="small">${esc(v.time||'')}</div></div><div style="flex:1;min-width:0"><strong>${esc(v.title)}</strong><div class="small">${esc(v.status)}${v.status==='Published'?' · '+fmt(v.views)+' views':''}</div></div><button onclick="editVideo('${v.id}')">Edit</button></div>`).join(''):'<div class="empty">No videos scheduled for this month.</div>'}
+function renderLearnings(){let list=videos.filter(v=>v.lesson||v.worked||v.failed||v.next).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));document.getElementById('learningItems').innerHTML=list.length?list.map(v=>`<div class="card"><div class="row"><h3>${esc(v.title)}</h3><button onclick="editVideo('${v.id}')">Edit</button></div><div class="small">${dateLabel(v.date)} · ${fmt(v.views)} views${v.stayed!==''&&v.stayed!=null?' · '+esc(v.stayed)+'% stayed':''}</div>${v.worked?`<p><strong>Worked:</strong> ${esc(v.worked)}</p>`:''}${v.failed?`<p><strong>Possible issue:</strong> ${esc(v.failed)}</p>`:''}${v.lesson?`<p><strong>Lesson:</strong> ${esc(v.lesson)}</p>`:''}${v.next?`<p><strong>Next action:</strong> ${esc(v.next)}</p>`:''}</div>`).join(''):'<div class="card empty">No lessons recorded yet. After reviewing a video, save one lesson and one action.</div>'}
+function exportData(){download('my-info-home-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({app:'My Info Home Tracker',version:1,exportedAt:new Date().toISOString(),videos},null,2),'application/json')}
+function exportCSV(){let cols=['title','status','date','time','url','ytId','length','views','stayed','avd','apv','views24','views7','hook','worked','failed','lesson','next'];let csv=[cols.join(','),...videos.map(v=>cols.map(k=>'"'+String(v[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');download('my-info-home-videos.csv',csv,'text/csv')}
+function download(name,text,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function importData(e){let f=e.target.files?.[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let data=JSON.parse(r.result),arr=Array.isArray(data)?data:data.videos;if(!Array.isArray(arr))throw Error('Backup has no video list');if(!confirm('Import '+arr.length+' videos? Existing records with matching IDs will be replaced.'))return;let map=new Map(videos.map(v=>[v.id,v]));arr.forEach(v=>map.set(v.id||uid(),v));videos=[...map.values()];persist();alert('Backup imported.')}catch(err){alert('Could not import: '+err.message)}e.target.value=''};r.readAsText(f)}
+function clearData(){if(!confirm('Permanently clear all videos and lessons saved in this browser? Export a backup first if needed.'))return;videos=[];persist()}
+function setStatus(t,ok=false){let el=document.getElementById('syncStatus');el.textContent=t;el.className=ok?'muted success':'muted'}
+function connectYouTube(){let clientId=document.getElementById('clientId').value.trim();if(!clientId){setStatus('Enter your Google OAuth Client ID first.');return}localStorage.setItem('mih_client_id',clientId);if(!window.google?.accounts?.oauth2){setStatus('Google Identity Services did not load. Check internet connection and reload the app.');return}tokenClient=google.accounts.oauth2.initTokenClient({client_id:clientId,scope:'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly',callback:async(resp)=>{if(resp.error){setStatus('Authorization failed: '+resp.error);return}accessToken=resp.access_token;await syncYouTube()}});tokenClient.requestAccessToken({prompt:'consent'})}
+function disconnectYouTube(){accessToken=null;setStatus('Disconnected. Local tracker data is unchanged.')}
+async function api(url){let r=await fetch(url,{headers:{Authorization:'Bearer '+accessToken}});let d=await r.json();if(!r.ok)throw Error(d.error?.message||'YouTube API request failed ('+r.status+')');return d}
+async function syncYouTube(){if(!accessToken){let id=document.getElementById('clientId').value.trim()||localStorage.getItem('mih_client_id');if(id){document.getElementById('clientId').value=id;return connectYouTube()}setStatus('Connect YouTube first by entering a Google OAuth Client ID.');return}setStatus('Syncing your YouTube uploads…');try{let ch=await api('https://www.googleapis.com/youtube/v3/channels?part=contentDetails,snippet&mine=true');if(!ch.items?.length)throw Error('No YouTube channel returned for this Google account.');let channel=ch.items[0],playlist=channel.contentDetails.relatedPlaylists.uploads,items=[],page='';do{let u='https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId='+encodeURIComponent(playlist)+(page?'&pageToken='+page:'');let d=await api(u);items.push(...(d.items||[]));page=d.nextPageToken||''}while(page&&items.length<500);let ids=items.map(x=>x.contentDetails.videoId).filter(Boolean);let details=[];for(let i=0;i<ids.length;i+=50){let d=await api('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id='+ids.slice(i,i+50).join(','));details.push(...(d.items||[]))}let byYt=new Map(videos.filter(v=>v.ytId).map(v=>[v.ytId,v]));let added=0,updated=0;for(let d of details){let old=byYt.get(d.id)||videos.find(v=>v.ytId===d.id)||{};let v={...old,id:old.id||uid(),ytId:d.id,title:old.title||d.snippet.title,status:old.status==='Published'?'Published':'Published',date:old.date||d.snippet.publishedAt.slice(0,10),time:old.time||'9:00 AM',url:'https://www.youtube.com/watch?v='+d.id,views:num(d.statistics.viewCount),likes:num(d.statistics.likeCount),comments:num(d.statistics.commentCount),length:old.length||durationSeconds(d.contentDetails.duration),stayed:old.stayed??'',avd:old.avd||0,apv:old.apv||0,hook:old.hook||'',worked:old.worked||'',failed:old.failed||'',lesson:old.lesson||'',next:old.next||'',updatedAt:new Date().toISOString()};let idx=videos.findIndex(x=>x.id===v.id);if(idx>=0){videos[idx]=v;updated++}else{videos.push(v);added++}}persist();setStatus(`Sync complete for ${channel.snippet.title}. Added ${added}, refreshed ${updated}. Public counts updated; retention metrics may need manual entry.`,true)}catch(e){setStatus('Sync error: '+e.message)}}
+function durationSeconds(s){let m=s.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);return m?(+(m[1]||0)*3600+ +(m[2]||0)*60+ +(m[3]||0)):0}
+document.getElementById('clientId').value=localStorage.getItem('mih_client_id')||'';
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installBtn').classList.remove('hidden')});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(deferredInstall){deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null}else alert('On Android Chrome, open the browser menu and choose “Install app” or “Add to Home screen”.')});
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+renderAll();
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body></html>
